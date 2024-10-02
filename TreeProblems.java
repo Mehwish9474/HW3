@@ -19,16 +19,15 @@ public class TreeProblems {
    * elements that are in one set but not the other.
    */
   
-  public static Set<Integer> different(Set<Integer> setA, Set<Integer> setB) {
+   public Set<Integer> different(Set<Integer> set1, Set<Integer> set2) {
+    Set<Integer> result = new TreeSet<>(set1);
+    result.removeAll(set2); // Remove elements present in both sets
+    Set<Integer> temp = new TreeSet<>(set2);
+    temp.removeAll(set1); // Remove elements present in both sets
+    result.addAll(temp); // Combine the differences from both sets
+    return result;
+}
 
-    // INSERT CODE HERE - DO NOT FORGET TO PLACE YOUR NAME ABOVE
-    //
-    // This can be done numerous ways, but once such will only that
-    // *several* lines of code. Hint: create two temporary TreeSets and utilize the
-    // methods retainAll(), addAll(), and removeAll(). But in the end, get something to work.
-
-    return setA;
-  }
 
 
   /**
@@ -38,12 +37,15 @@ public class TreeProblems {
    * remove all <key, value> pairs where the key is even. 
    */
 
-  public static void removeEven(Map<Integer, String> treeMap) {
-
-    // INSERT CODE HERE.
-
-    return;
-  }
+   public void removeEven(Map<Integer, String> map) {
+    Iterator<Integer> iterator = map.keySet().iterator();
+    while (iterator.hasNext()) {
+        int key = iterator.next();
+        if (key % 2 == 0) {
+            iterator.remove(); // Remove entry if the key is even
+        }
+    }
+}
 
 
   /**
@@ -53,12 +55,17 @@ public class TreeProblems {
    * return a boolean value indicating if the two trees are equal or not.
    */
 
-  public boolean treesEqual(Map<Integer, String> tree1,Map<Integer, String> tree2 ) {
+   public boolean treesEqual(Map<Integer, String> map1, Map<Integer, String> map2) {
+    if (map1.size() != map2.size()) {
+        return false; // Maps are not equal if their sizes differ
+    }
+    for (Map.Entry<Integer, String> entry : map1.entrySet()) {
+        if (!entry.getValue().equals(map2.get(entry.getKey()))) {
+            return false; // Maps are not equal if any key-value pair differs
+        }
+    }
+    return true; // Maps are equal
+}
 
-    // INSERT CODE HERE
-
-    return false;
-
-  }
 
 } // end treeProblems class

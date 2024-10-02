@@ -341,29 +341,56 @@ class LUC_AVLTree {
      *  @return node - new top of subtree, it possibly changed due to a rotation
      */
 
-    private Node deleteElement(int value, Node node) {
-
-        /*
-         * ADD CODE HERE
-         * 
-         * NOTE, that you should use the existing coded private methods
-         * in this file, which include:
-         *      - minValueNode,
-         *      - getMaxHeight,
-         *      - getHeight,
-         *      - getBalanceFactor,
-         *      - LLRotation
-         *      - RRRotation,
-         *      - LRRotation,
-         *      - RLRotation.
-         *
-         * To understand what each of these methods do, see the method prologues and
-         * code for each. You can also look at the method InsertElement, as it has do
-         * do many of the same things as this method.
-         */
-
+     private Node deleteElement(int value, Node node) {
+        if (node == null) {
+            return null;
+        }
+    
+        // Step 1: Traverse to find the node to delete
+        if (value < node.value) {
+            node.leftChild = deleteElement(value, node.leftChild);
+        } else if (value > node.value) {
+            node.rightChild = deleteElement(value, node.rightChild);
+        } else {
+            // Step 2: Node found, now handle deletion
+            if (node.leftChild == null && node.rightChild == null) {
+                return null; // Case: No children (leaf)
+            } else if (node.leftChild == null) {
+                return node.rightChild; // Case: One right child
+            } else if (node.rightChild == null) {
+                return node.leftChild; // Case: One left child
+            } else {
+                // Case: Two children, find the in-order successor (smallest in right subtree)
+                Node temp = minValueNode(node.rightChild);
+                node.value = temp.value;
+                node.rightChild = deleteElement(temp.value, node.rightChild); // Delete successor
+            }
+        }
+    
+        // Step 3: Rebalance the tree
+        node.height = Math.max(getHeight(node.leftChild), getHeight(node.rightChild)) + 1;
+        int balanceFactor = getBalanceFactor(node);
+    
+        // Step 4: Perform rotations if necessary
+        if (balanceFactor > 1 && getBalanceFactor(node.leftChild) >= 0) {
+            return LLRotation(node); // Left-Left case
+        }
+        if (balanceFactor > 1 && getBalanceFactor(node.leftChild) < 0) {
+            node.leftChild = RRRotation(node.leftChild); // Left-Right case
+            return LLRotation(node);
+        }
+        if (balanceFactor < -1 && getBalanceFactor(node.rightChild) <= 0) {
+            return RRRotation(node); // Right-Right case
+        }
+        if (balanceFactor < -1 && getBalanceFactor(node.rightChild) > 0) {
+            node.rightChild = LLRotation(node.rightChild); // Right-Left case
+            return RRRotation(node);
+        }
+    
         return node;
     }
+    
+    
 
 
     /**
